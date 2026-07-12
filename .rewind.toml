@@ -1,0 +1,4 @@
+# Rewind's own configuration (dogfooding). See README for all options.
+test_command = "cargo test --locked"
+max_file_size = 1048576
+ignore = ["target/", "dist/"]

@@ -1,0 +1,70 @@
+[package]
+name = "rewind"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.82"
+description = "Time-travel debugging for any local Git repository: an embedded shell, snapshots, test history, diffs, and failure investigation in your terminal."
+authors = ["Rewind contributors"]
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/rewind-dev/rewind"
+homepage = "https://github.com/rewind-dev/rewind"
+readme = "README.md"
+keywords = ["debugging", "git", "tui", "time-travel", "snapshots"]
+categories = ["command-line-utilities", "development-tools"]
+exclude = ["/.github", "/docs/assets", "/.rewind-report"]
+
+[[bin]]
+name = "rewind"
+path = "src/main.rs"
+
+[dependencies]
+# CLI
+clap = { version = "4.5", features = ["derive", "wrap_help"] }
+clap_complete = "4.5"
+clap_mangen = "0.2"
+
+# Errors + logging
+anyhow = "1.0"
+thiserror = "1.0"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt"] }
+
+# Storage
+rusqlite = { version = "0.32", features = ["bundled", "backup"] }
+blake3 = "1.5"
+dirs = "5.0"
+
+# Config + serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+toml = "0.8"
+
+# Filesystem
+ignore = "0.4"
+notify = "6.1"
+
+# Diffing
+similar = "2.6"
+
+# Terminal UI
+ratatui = "0.29"
+crossterm = { version = "0.28", features = ["event-stream"] }
+portable-pty = "0.8"
+vt100 = "0.15"
+
+# Concurrency + misc
+crossbeam-channel = "0.5"
+time = { version = "0.3", features = ["formatting"] }
+unicode-width = "0.2"
+
+[dev-dependencies]
+tempfile = "3.10"
+assert_cmd = "2.0"
+predicates = "3.1"
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1
+strip = true
+panic = "unwind"

@@ -1,0 +1,52 @@
+# Rewind CI workflow template
+# ---------------------------------------------------------------------------
+# Copy this file into your project at `.github/workflows/rewind.yml` and set the
+# test command for your project. It runs your tests through `rewind ci`, which
+# records snapshots and produces a `.rewind-report/` directory (test result,
+# changed files, dependency changes, and likely causes) that is uploaded as a
+# workflow artifact. No credentials or network access are required.
+
+name: Rewind
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  rewind:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Rewind investigates changes; a little history helps but is optional.
+          fetch-depth: 0
+
+      # Install the Rust toolchain only because we install Rewind from source
+      # here. If you distribute a prebuilt binary, download it instead.
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Install Rewind
+        run: cargo install rewind --locked
+
+      # --- Set up your project's own toolchain/deps here, e.g. -----------------
+      # - uses: actions/setup-node@v4
+      #   with: { node-version: 20 }
+      # - run: npm ci
+      # -------------------------------------------------------------------------
+
+      - name: Configure Git
+        run: |
+          git config --global user.email "ci@example.com"
+          git config --global user.name "Rewind CI"
+
+      - name: Run tests through Rewind
+        # Replace with your project's test command.
+        run: rewind ci -- npm test
+
+      - name: Upload Rewind report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rewind-report
+          path: .rewind-report/

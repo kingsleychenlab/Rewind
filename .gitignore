@@ -1,0 +1,7 @@
+/target
+Cargo.lock.orig
+*.orig
+.DS_Store
+.rewind-report/
+# Rewind never stores data inside the repo, but ignore an accidental local db
+/rewind.db
